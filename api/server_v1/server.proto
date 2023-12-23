@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package server;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/StasikLeyshin/github.com/StasikLeyshin/grpc-kafka-services/pkg/server_v1;server_v1";
+
+
+message Server {
+  string uuid = 1;
+  string name = 2;
+  string host = 3;
+  string port = 4;
+  google.protobuf.Timestamp created_at = 5;
+}
+
+message CreateServerRequest {
+  string name = 1;
+  string host = 2;
+  string port = 3;
+}
+
+message CreateServerResponse {
+  string status = 1;
+}

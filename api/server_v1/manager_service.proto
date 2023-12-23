@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package server;
+
+option go_package = "github.com/StasikLeyshin/github.com/StasikLeyshin/grpc-kafka-services/pkg/server_v1;server_v1";
+
+import "server.proto";
+
+
+service ManagerService {
+  rpc CreateServer(CreateServerRequest) returns (CreateServerResponse);
+}
