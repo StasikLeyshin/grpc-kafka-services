@@ -1,0 +1,8 @@
+
+grpc:
+  host: "localhost"
+  port: 5000
+
+kafka:
+  brokers: ["kafka:9092"]
+  topic: "server"

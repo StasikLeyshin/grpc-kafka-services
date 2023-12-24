@@ -2,12 +2,15 @@ package startup
 
 import (
 	"fmt"
+	//"github.com/StasikLeyshin/grpc-kafka-services/internal/server/grpc"
 	"gopkg.in/yaml.v3"
 	"os"
 )
 
 type Config struct {
-	GrpcConfig GrpcConfig `yaml:"grpc"`
+	GrpcConfig  GrpcConfig     `yaml:"grpc"`
+	KafkaConfig KafkaConfig    `yaml:"kafka"`
+	Database    DatabaseConfig `yaml:"database"`
 }
 
 func NewConfig(configFile string) (*Config, error) {

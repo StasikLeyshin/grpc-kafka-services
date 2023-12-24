@@ -1,0 +1,11 @@
+database:
+  host: "postgres"
+  port: 3306
+  user: "postgres_user"
+  password: "postgres_pass"
+  db_name: "servers"
+
+
+kafka:
+  brokers: ["kafka:9092"]
+  topic: "server"

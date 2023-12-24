@@ -14,7 +14,7 @@ type App struct {
 
 type component interface {
 	Start() error
-	Stop() error
+	Stop(ctx context.Context) error
 }
 
 func NewApp(logger *logrus.Logger, components ...component) *App {
@@ -39,7 +39,7 @@ func (a *App) Run(ctx context.Context) {
 	<-componentsCtx.Done()
 
 	for _, comp := range a.components {
-		err := comp.Stop()
+		err := comp.Stop(ctx)
 		if err != nil {
 			a.logger.Printf("error when stopping the component %v", err)
 		}
