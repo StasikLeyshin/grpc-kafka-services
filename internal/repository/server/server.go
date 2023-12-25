@@ -26,6 +26,7 @@ func (r *repository) ServerAutoMigrate() error {
 
 func (r *repository) CreateServer(server *models.Server, user *models.User) error {
 	err := r.db.Transaction(func(tx *gorm.DB) error {
+
 		if err := tx.Create(&server).Error; err != nil {
 			return err
 		}
@@ -39,4 +40,16 @@ func (r *repository) CreateServer(server *models.Server, user *models.User) erro
 		return err
 	}
 	return nil
+}
+
+func (r *repository) GetServer(serverUuid string) (*models.Server, error) {
+	var server models.Server
+
+	err := r.db.First(&server, "uuid = ?", serverUuid)
+
+	if err != nil {
+		return nil, fmt.Errorf("server not found")
+	}
+
+	return &server, nil
 }

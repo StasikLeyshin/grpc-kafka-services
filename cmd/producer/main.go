@@ -15,7 +15,6 @@ func main() {
 
 	// Файл с конфигурацией проекта
 	configPath := os.Getenv("CONFIG_PATH")
-	//configPath := "configs/producer-service.yaml"
 
 	// Создаём логгер
 	logger := startup.NewLogger()
@@ -39,25 +38,13 @@ func main() {
 	// Клиент для реализации бизнес-логики
 	serviceClient := server.NewService(kafkaProducer)
 
-	// Релизация методов grpc
-	implementationServer := api.NewImplementation(serviceClient)
+	// Реализация методов grpc
+	implementationServer := api.NewImplementation(serviceClient, logger)
 
 	// Создаём экземпляр grpc сервера
-	grpcClient := grpc.NewServerGRPC(config.GrpcConfig.Port, implementationServer)
+	grpcClient := grpc.NewServerGRPC(config.GrpcConfig.Port, implementationServer, logger)
 
 	// Запускаем компонент grpc сервера
 	app.NewApp(logger, grpcClient).Run(context.Background())
 
-	//// Клиент для реализации бизнес-логики
-	//client := service.NewService(logger, config.Store.FilePath)
-	//err = client.Start()
-	//if err != nil {
-	//	logger.Fatalf("failed Start Service: %v", err)
-	//}
-	//
-	//// Создаём экземпляр http сервера
-	//httpRouter := http.NewHttpRouter(config.Http, client, logger)
-	//
-	//// Запускаем http сервер
-	//app.NewApp(logger, httpRouter).Run(context.Background())
 }

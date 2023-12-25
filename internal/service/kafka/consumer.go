@@ -5,6 +5,7 @@ import (
 	"github.com/StasikLeyshin/grpc-kafka-services/internal/service"
 	"github.com/StasikLeyshin/grpc-kafka-services/internal/service/server-consumer/converter"
 	"github.com/segmentio/kafka-go"
+	"github.com/sirupsen/logrus"
 )
 
 //type ConsumerConfig struct {
@@ -13,8 +14,7 @@ import (
 
 type Consumer struct {
 	client *kafka.Reader
-	//config ConsumerConfig
-	//logger log.Logger
+	logger *logrus.Logger
 
 	cancel context.CancelFunc
 	done   chan struct{}
@@ -24,11 +24,11 @@ type Consumer struct {
 	serverService service.ServerConsumerService
 }
 
-func NewConsumer(client *kafka.Reader, serverService service.ServerConsumerService) *Consumer {
+func NewConsumer(client *kafka.Reader, serverService service.ServerConsumerService, logger *logrus.Logger) *Consumer {
 	return &Consumer{
 		client:        client,
 		serverService: serverService,
-		//logger: logger.With(log.ComponentKey, "Kafka consumer"),
+		logger:        logger,
 	}
 }
 
@@ -66,9 +66,11 @@ func (c *Consumer) run(ctx context.Context) {
 		default:
 			msg, err := c.client.ReadMessage(ctx)
 			if err != nil {
+				c.logger.WithError(err).Error("failed to read message from kafka")
 				continue
 			}
 			err = c.serverService.CreateServer(ctx, converter.ToServerFromKafka(msg.Value), string(msg.Key))
+			c.logger.WithError(err).Error(err)
 			if err != nil {
 				continue
 			}

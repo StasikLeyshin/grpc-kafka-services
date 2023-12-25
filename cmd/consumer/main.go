@@ -7,7 +7,6 @@ import (
 	"github.com/StasikLeyshin/grpc-kafka-services/internal/repository/server"
 	"github.com/StasikLeyshin/grpc-kafka-services/internal/service/kafka"
 	server_consumer "github.com/StasikLeyshin/grpc-kafka-services/internal/service/server-consumer"
-	"log"
 	"os"
 )
 
@@ -15,7 +14,6 @@ func main() {
 
 	// Файл с конфигурацией проекта
 	configPath := os.Getenv("CONFIG_PATH")
-	//configPath := "configs/config.yaml"
 
 	// Создаём логгер
 	logger := startup.NewLogger()
@@ -29,15 +27,15 @@ func main() {
 	// Открытие соединения с postgres
 	dbClient, err := startup.DatabaseConnect(config.Database)
 	if err != nil {
-		log.Fatalf("failed to connect to database: %v", err)
+		logger.Fatalf("failed to connect to database: %v", err)
 	}
 
-	log.Printf("connecting to the database: success")
+	logger.Info("connecting to the database: success")
 
 	defer func() {
 		dbInstance, _ := dbClient.DB()
 		if err = dbInstance.Close(); err != nil {
-			log.Fatalf("failed to close database: %v", err)
+			logger.WithError(err).Warn("failed to close database")
 		}
 	}()
 
@@ -54,17 +52,11 @@ func main() {
 
 	err = serviceClient.Start()
 	if err != nil {
-		log.Fatalf("failed to auto migrate: %v", err)
+		logger.Fatalf("failed to auto migrate: %v", err)
 	}
 
-	kafkaProducer := kafka.NewConsumer(kafkaClient, serviceClient)
+	kafkaProducer := kafka.NewConsumer(kafkaClient, serviceClient, logger)
 
-	//// Релизация методов grpc
-	//implementationServer := api.NewImplementation(serviceClient)
-	//
-	//// Создаём экземпляр grpc сервера
-	//grpcClient := grpc.NewServerGRPC(config.GrpcConfig, implementationServer)
-	//
-	//// Запускаем компонент kafka
+	// Запускаем компонент consumer kafka
 	app.NewApp(logger, kafkaProducer).Run(context.Background())
 }

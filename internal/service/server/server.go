@@ -11,6 +11,10 @@ import (
 )
 
 func (s *service) CreateServer(ctx context.Context, serverRequest *model.CreateServerRequest) (*model.CreateServerResponse, error) {
+	if serverRequest == nil {
+		return nil, nil
+	}
+
 	userUUID, err := uuid.NewUUID()
 	if err != nil {
 		return nil, fmt.Errorf("failed to generation user UUID: %v", err)

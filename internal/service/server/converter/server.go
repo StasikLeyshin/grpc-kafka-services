@@ -16,6 +16,10 @@ func ToServerFromGrpc(server *desc.Server) *model.Server {
 }
 
 func ToCreateServerRequestFromGrpc(server *desc.CreateServerRequest) *model.CreateServerRequest {
+	if server == nil {
+		return nil
+	}
+
 	return &model.CreateServerRequest{
 		Name: server.Name,
 		Host: server.Host,
@@ -24,6 +28,10 @@ func ToCreateServerRequestFromGrpc(server *desc.CreateServerRequest) *model.Crea
 }
 
 func ToCreateServerResponseToGrpc(server *model.CreateServerResponse) *desc.CreateServerResponse {
+	if server == nil {
+		return nil
+	}
+
 	return &desc.CreateServerResponse{
 		Status: server.Status,
 	}

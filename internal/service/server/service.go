@@ -8,11 +8,11 @@ import (
 var _ def.ServerService = (*service)(nil)
 
 type service struct {
-	producer *kafka.Producer
+	producer kafka.KafkaProducer
 }
 
 func NewService(
-	producer *kafka.Producer,
+	producer kafka.KafkaProducer,
 ) *service {
 	return &service{
 		producer: producer,

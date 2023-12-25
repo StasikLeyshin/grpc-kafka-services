@@ -6,17 +6,17 @@ import (
 	"github.com/segmentio/kafka-go"
 )
 
-type Producer struct {
+type producer struct {
 	client *kafka.Writer
 }
 
-func NewProducer(client *kafka.Writer) *Producer {
-	return &Producer{
+func NewProducer(client *kafka.Writer) *producer {
+	return &producer{
 		client: client,
 	}
 }
 
-func (p *Producer) SendMessage(ctx context.Context, key []byte, value []byte) error {
+func (p *producer) SendMessage(ctx context.Context, key []byte, value []byte) error {
 	err := p.client.WriteMessages(ctx, kafka.Message{
 		Key:   key,
 		Value: value,
